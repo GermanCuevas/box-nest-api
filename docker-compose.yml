@@ -1,0 +1,18 @@
+version: '3'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: box_delivery_api
+    container_name: box_api
+    ports:
+      - '3001:3001'
+    command: npm run start:dev
+    volumes:
+      - ./:/api
+    networks:
+      dev:
+
+networks:
+  dev:
