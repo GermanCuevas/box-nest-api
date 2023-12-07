@@ -11,10 +11,19 @@ import {
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { Public } from './auth.guard';
+import { CreateUser } from './dto/create-user.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Post('AddUser')
+  addUser(@Body() CreateUser: CreateUser) {
+    //s
+    return this.authService.createUser(CreateUser);
+  }
 
   @Public()
   @HttpCode(HttpStatus.OK)
