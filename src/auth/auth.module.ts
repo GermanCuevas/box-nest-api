@@ -3,9 +3,9 @@ import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
-import { jwtConstants } from './constants';
+import { jwtConstants } from '../config/config';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './auth.guard';
+import { AuthGuard } from '../common/guards/auth.guard';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './entities/users.entity';
 
@@ -15,7 +15,7 @@ import { User, UserSchema } from './entities/users.entity';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' }
+      signOptions: { expiresIn: '2h' }
     }),
     MongooseModule.forFeature([
       {
@@ -32,6 +32,6 @@ import { User, UserSchema } from './entities/users.entity';
     }
   ],
   controllers: [AuthController],
-  exports: [AuthService]
+  exports: [AuthService, MongooseModule]
 })
 export class AuthModule {}
