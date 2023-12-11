@@ -36,20 +36,6 @@ export class AuthController {
     return this.authService.loginUser(LoginUserDto, res);
   }
 
-  @Public()
-  @HttpCode(HttpStatus.OK)
-  @Post('login')
-  signIn(@Body() signInDto: Record<string, any>) {
-    return this.authService.signIn(signInDto.username, signInDto.password);
-  }
-
-  @Public()
-  @HttpCode(HttpStatus.OK)
-  @Get('testeando')
-  test() {
-    return 'testeando';
-  }
-
   @UseGuards(AuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
