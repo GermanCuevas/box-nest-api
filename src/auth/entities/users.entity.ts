@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
 import * as bcryptjs from 'bcryptjs';
+import { UnauthorizedException } from '@nestjs/common';
 
 @Schema()
 export class User extends Document {
@@ -22,17 +23,12 @@ export class User extends Document {
   coordinates: number[];
   @Prop({ type: String })
   imgAvatar: string;
+  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Package' }], default: [] })
+  packagesPending: MongooseSchema.Types.ObjectId[];
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Package', default: null })
+  packageInCourse: MongooseSchema.Types.ObjectId | null;
 
-  /* async setPassword(password: string) {
-    const generatedSalt = await bcryptjs.genSalt(10); // Generate a salt
-    this.salt = generatedSalt; // Store the generated salt in the User entity
-    this.password = await bcryptjs.hash(password, this.salt); // Hash the password using the generated salt
-  }
-
-  async validatePassword(password: string): Promise<boolean> {
-    const hash = await bcryptjs.hash(password, this.salt);
-    return hash === this.password;
-  } */
+  checkpass: Function;
 }
 
 async function hashPassword(next: Function) {
@@ -55,7 +51,15 @@ async function hashPassword(next: Function) {
     return next(err);
   }
 }
+async function comparePassword(password: string): Promise<void> {
+  const user = this;
+  const hash = await bcryptjs.compare(password, user.password);
+  if (!hash) {
+    throw new UnauthorizedException('Invalid password');
+  }
+}
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
 UserSchema.pre<User>('save', hashPassword);
+UserSchema.methods.checkpass = comparePassword;

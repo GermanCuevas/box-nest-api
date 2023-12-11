@@ -6,12 +6,15 @@ import {
   HttpStatus,
   Post,
   Request,
+  Res,
   UseGuards
 } from '@nestjs/common';
-import { AuthGuard } from './auth.guard';
+import { AuthGuard } from '../common/guards/auth.guard';
 import { AuthService } from './auth.service';
-import { Public } from './auth.guard';
+import { Public } from '../common/guards/auth.guard';
 import { CreateUser } from './dto/create-user.dto';
+import { LoginUser } from './dto/login-user.dto';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -27,9 +30,24 @@ export class AuthController {
 
   @Public()
   @HttpCode(HttpStatus.OK)
+  @Post('LoginUser')
+  loginUser(@Body() LoginUserDto: LoginUser, @Res() res: Response) {
+    //s
+    return this.authService.loginUser(LoginUserDto, res);
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
   @Post('login')
   signIn(@Body() signInDto: Record<string, any>) {
     return this.authService.signIn(signInDto.username, signInDto.password);
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Get('testeando')
+  test() {
+    return 'testeando';
   }
 
   @UseGuards(AuthGuard)

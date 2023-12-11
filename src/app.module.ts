@@ -4,13 +4,16 @@ import { UsersModule } from './users/users.module';
 
 import { RegisterModule } from './register/register.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { PackagesModule } from './packages/packages.module';
 
 @Module({
   imports: [
     MongooseModule.forRoot('mongodb://mongodb:27017/BigFive'),
     AuthModule,
     UsersModule,
-    RegisterModule
+    RegisterModule,
+    PackagesModule
   ]
 })
+//sd
 export class AppModule {}
