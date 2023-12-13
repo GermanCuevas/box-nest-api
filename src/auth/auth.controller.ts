@@ -24,7 +24,6 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('AddUser')
   addUser(@Body() CreateUser: CreateUser) {
-    //s
     return this.authService.createUser(CreateUser);
   }
 
@@ -32,7 +31,6 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('LoginUser')
   loginUser(@Body() LoginUserDto: LoginUser, @Res() res: Response) {
-    //s
     return this.authService.loginUser(LoginUserDto, res);
   }
 

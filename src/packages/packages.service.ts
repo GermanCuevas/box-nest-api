@@ -13,7 +13,7 @@ export class PackagesService {
     @InjectModel(Package.name)
     private packagesModel: Model<Package>,
     @InjectModel(User.name)
-    private readonly UserModel: Model<User>
+    private readonly userModel: Model<User>
   ) {}
 
   async create(createPackageDto: CreatePackageDto) {
@@ -26,7 +26,7 @@ export class PackagesService {
   }
   async addPackageUser(addPackageUserDto: AddPackageUser) {
     try {
-      const User = await this.UserModel.findById<User>(addPackageUserDto.idUser);
+      const User = await this.userModel.findById<User>(addPackageUserDto.idUser);
       if (!User) throw new NotFoundException('User not found');
       User.packagesPending.push(addPackageUserDto.idPackage);
       await User.save();
