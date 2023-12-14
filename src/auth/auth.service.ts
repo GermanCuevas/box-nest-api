@@ -48,7 +48,7 @@ export class AuthService {
       const payload = { id_user: user._id, name: user.name, mail: user.email };
       const token = await this.jwtService.signAsync(payload);
       res.cookie('token', token);
-      res.send(user);
+      res.sendStatus(200);
     } catch (error) {
       console.log(error);
       //Invalid password
