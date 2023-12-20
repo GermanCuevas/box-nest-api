@@ -18,7 +18,7 @@ import { Public } from '../common/guards/auth.guard';
 import { CreateUser } from './dto/create-user.dto';
 import { LoginUser } from './dto/login-user.dto';
 import { Response } from 'express';
-import { BadRequest, NotFound } from 'src/common/exceptions/exceptions';
+import { BadRequest, Conflict, NotFound } from 'src/common/exceptions/exceptions';
 
 @Controller('auth')
 export class AuthController {
@@ -29,10 +29,12 @@ export class AuthController {
   @Post('AddUser')
   async addUser(@Body() CreateUser: CreateUser) {
     try {
-      const result = await this.authService.createUser(CreateUser);
+      await this.authService.createUser(CreateUser);
       return;
     } catch (error) {
       switch (error.message) {
+        case 'Email already exist':
+          throw new Conflict();
         case 'User not created':
           throw new BadRequest();
         default:
