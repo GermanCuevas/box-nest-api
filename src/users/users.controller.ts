@@ -42,6 +42,8 @@ export class UsersController {
     }
   }
 
+  // comentario
+
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.usersService.findOne(+id);
