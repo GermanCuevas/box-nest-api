@@ -5,8 +5,14 @@ export class NotFound extends HttpException {
     super(message, HttpStatus.NOT_FOUND);
   }
 }
+
 export class BadRequest extends HttpException {
   constructor(message: string = 'User no created') {
     super(message, HttpStatus.BAD_REQUEST);
+  }
+}
+export class Conflict extends HttpException {
+  constructor(message: string = 'Email already exist') {
+    super(message, HttpStatus.CONFLICT);
   }
 }

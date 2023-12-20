@@ -23,6 +23,8 @@ export class AuthService {
   ) {}
 
   async createUser(userData: CreateUser) {
+    const email = await this.userModel.findOne({ email: userData.email });
+    if (email) throw new Error('Email already exist');
     const user = await this.userModel.create(userData);
     if (!user) throw new Error('User not created');
 
