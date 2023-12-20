@@ -24,6 +24,7 @@ export class PackagesService {
       throw new InternalServerErrorException();
     }
   }
+
   async addPackageUser(addPackageUserDto: AddPackageUser) {
     try {
       const User = await this.userModel.findById<User>(addPackageUserDto.idUser);
@@ -35,10 +36,9 @@ export class PackagesService {
       switch (error.message) {
         case 'User not found':
           throw error;
-          break;
+
         default:
           throw new InternalServerErrorException();
-          break;
       }
     }
   }

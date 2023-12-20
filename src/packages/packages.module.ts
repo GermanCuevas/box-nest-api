@@ -16,6 +16,7 @@ import { AuthModule } from 'src/auth/auth.module';
     ]),
     AuthModule
   ],
-  providers: [PackagesService]
+  providers: [PackagesService],
+  exports: [PackagesService, MongooseModule]
 })
 export class PackagesModule {}
