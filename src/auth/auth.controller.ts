@@ -1,9 +1,12 @@
 import {
+  BadGatewayException,
+  BadRequestException,
   Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
+  InternalServerErrorException,
   Post,
   Request,
   Res,
@@ -15,6 +18,7 @@ import { Public } from '../common/guards/auth.guard';
 import { CreateUser } from './dto/create-user.dto';
 import { LoginUser } from './dto/login-user.dto';
 import { Response } from 'express';
+import { BadRequest, NotFound } from 'src/common/exceptions/exceptions';
 
 @Controller('auth')
 export class AuthController {
@@ -23,20 +27,47 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('AddUser')
-  addUser(@Body() CreateUser: CreateUser) {
-    return this.authService.createUser(CreateUser);
+  async addUser(@Body() CreateUser: CreateUser) {
+    try {
+      const result = await this.authService.createUser(CreateUser);
+      return;
+    } catch (error) {
+      switch (error.message) {
+        case 'User not created':
+          throw new BadRequest();
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
   }
 
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('LoginUser')
-  loginUser(@Body() LoginUserDto: LoginUser, @Res() res: Response) {
-    return this.authService.loginUser(LoginUserDto, res);
+  async loginUser(@Body() LoginUserDto: LoginUser, @Res() res: Response) {
+    try {
+      const result = await this.authService.loginUser(LoginUserDto, res);
+      res.cookie('token', result.token);
+      return res.sendStatus(200);
+    } catch (error) {
+      switch (error.message) {
+        case 'User not found':
+          throw new NotFound();
+        case 'Invalid password':
+          throw new BadRequestException(error.message);
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
   }
 
   @UseGuards(AuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
-    return req.user;
+    try {
+      return req.user;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 }

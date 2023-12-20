@@ -23,47 +23,19 @@ export class AuthService {
   ) {}
 
   async createUser(userData: CreateUser) {
-    try {
-      const user = await this.userModel.create(userData);
-      return user;
-    } catch (error) {
-      console.log(error);
-      switch (error.code) {
-        case 11000:
-          throw new BadRequestException(`The email ${error.keyValue.email} already exists`);
-          break;
-        default:
-          throw new InternalServerErrorException();
-          break;
-      }
-    }
+    const user = await this.userModel.create(userData);
+    if (!user) throw new Error('User not created');
+
+    return user;
   }
 
   async loginUser(loginUser: LoginUser, @Res() res: Response) {
-    try {
-      const user = await this.userModel.findOne({ email: loginUser.email });
-      if (!user) throw new NotFoundException('User not found');
-      //const validate = user.validatePassword('sds');
-      await user.checkpass(loginUser.password);
-      const payload = { id_user: user._id, name: user.name, mail: user.email };
-      const token = await this.jwtService.signAsync(payload);
-      res.cookie('token', token);
-      res.sendStatus(200);
-    } catch (error) {
-      console.log(error);
-      //Invalid password
-
-      switch (error.message) {
-        case 'Invalid password':
-          throw error;
-          break;
-        case 'User not found':
-          throw error;
-          break;
-        default:
-          throw new InternalServerErrorException();
-          break;
-      }
-    }
+    const user = await this.userModel.findOne({ email: loginUser.email });
+    if (!user) throw new Error('User not found');
+    //const validate = user.validatePassword('sds');
+    await user.checkpass(loginUser.password);
+    const payload = { id_user: user._id, name: user.name, mail: user.email };
+    const token = await this.jwtService.signAsync(payload);
+    return { token, user: payload };
   }
 }
