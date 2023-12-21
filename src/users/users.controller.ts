@@ -12,7 +12,7 @@ import { UsersService } from './users.service';
 import { Public } from 'src/common/guards/auth.guard';
 import { NotFound } from 'src/common/exceptions/exceptions';
 import { AssignPackageUserDto } from './dto/assignPackage-user.dto';
-import { CancelAssignedPackageDto } from './dto/cancelAssignedPackages.dto';
+import { PackageSingleStatusDto } from './dto/packageSingleStatus.dto';
 
 @Controller('users')
 export class UsersController {
@@ -56,11 +56,32 @@ export class UsersController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Put('cancelAssignedPackage')
-  async cancelAssignedPackage(@Body() cancelAssignedPackageDto: CancelAssignedPackageDto) {
+  async cancelAssignedPackage(@Body() packageSingleStatusDto: PackageSingleStatusDto) {
     try {
       const cancelAssignPackages =
-        await this.usersService.cancelAssignedPackage(cancelAssignedPackageDto);
+        await this.usersService.cancelAssignedPackage(packageSingleStatusDto);
       return cancelAssignPackages;
+    } catch (error) {
+      switch (error.message) {
+        case 'User not found':
+          throw new NotFound();
+        case 'Package not found':
+          throw new NotFound('Package not found');
+        case 'Package not found in pending package of user':
+          throw new NotFound('Package not found in pending package of user');
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Put('putPackageInCourse')
+  async putPackageInCourse(@Body() packageSingleStatusDto: PackageSingleStatusDto) {
+    try {
+      const putPackageInCourse = await this.usersService.putPackageInCourse(packageSingleStatusDto);
+      return putPackageInCourse;
     } catch (error) {
       switch (error.message) {
         case 'User not found':

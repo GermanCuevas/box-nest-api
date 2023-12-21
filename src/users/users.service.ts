@@ -4,7 +4,7 @@ import { Package } from 'src/packages/entities/package.entity';
 import { Model } from 'mongoose';
 import { AssignPackageUserDto } from './dto/assignPackage-user.dto';
 import { User } from 'src/auth/entities/users.entity';
-import { CancelAssignedPackageDto } from './dto/cancelAssignedPackages.dto';
+import { PackageSingleStatusDto } from './dto/packageSingleStatus.dto';
 
 @Injectable()
 export class UsersService {
@@ -42,7 +42,7 @@ export class UsersService {
     return;
   }
 
-  async cancelAssignedPackage(body: CancelAssignedPackageDto) {
+  async cancelAssignedPackage(body: PackageSingleStatusDto) {
     const { packageId, userId } = body;
     const user = await this.userModel.findById(userId);
     if (!user) throw new Error('User not found');
@@ -58,6 +58,32 @@ export class UsersService {
     const updatedPackage = await this.packageModel.findByIdAndUpdate(packageId, {
       status: 'created'
     });
+    if (!updatedPackage) {
+      throw new Error('Package not found');
+    }
+
+    user.save();
+    return user;
+  }
+
+  async putPackageInCourse(body: PackageSingleStatusDto) {
+    const { packageId, userId } = body;
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new Error('User not found');
+
+    const indexPendingPackage = user.packagesPending.indexOf(packageId);
+
+    if (indexPendingPackage !== -1) {
+      user.packagesPending.splice(indexPendingPackage, 1);
+      user.packageInCourse = packageId;
+    } else {
+      throw new Error('Package not found in pending package of user');
+    }
+
+    const updatedPackage = await this.packageModel.findByIdAndUpdate(packageId, {
+      status: 'inCourse'
+    });
+
     if (!updatedPackage) {
       throw new Error('Package not found');
     }

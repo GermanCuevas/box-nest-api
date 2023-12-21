@@ -1,7 +1,7 @@
-import { IsArray, IsMongoId, IsNotEmpty } from 'class-validator';
-import { Document, Schema as MongooseSchema } from 'mongoose';
+import { IsMongoId, IsNotEmpty } from 'class-validator';
+import { Schema as MongooseSchema } from 'mongoose';
 
-export class CancelAssignedPackageDto {
+export class PackageSingleStatusDto {
   @IsNotEmpty({ message: 'packagesId are required' })
   @IsMongoId()
   packageId: MongooseSchema.Types.ObjectId;
