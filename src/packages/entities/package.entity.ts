@@ -5,7 +5,8 @@ import { Document } from 'mongoose';
 enum StatusOptions {
   in_course = 'in course',
   pending = 'pending',
-  deliveried = 'deliveried'
+  deliveried = 'deliveried',
+  created = 'created'
 }
 
 @Schema()
@@ -15,7 +16,7 @@ export class Package extends Document {
   @Prop({
     type: String,
     enum: Object.values(StatusOptions),
-    default: StatusOptions.pending
+    default: StatusOptions.created
   })
   status: string;
   @Prop({ type: String, required: true })
