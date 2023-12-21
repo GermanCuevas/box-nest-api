@@ -5,8 +5,8 @@ import {
   HttpCode,
   HttpStatus,
   InternalServerErrorException,
-  Patch,
-  Post
+  Post,
+  Put
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Public } from 'src/common/guards/auth.guard';
@@ -55,7 +55,7 @@ export class UsersController {
   }
   @Public()
   @HttpCode(HttpStatus.OK)
-  @Patch('cancelAssignedPackage')
+  @Put('cancelAssignedPackage')
   async cancelAssignedPackage(@Body() cancelAssignedPackageDto: CancelAssignedPackageDto) {
     try {
       const cancelAssignPackages =
@@ -67,6 +67,8 @@ export class UsersController {
           throw new NotFound();
         case 'Package not found':
           throw new NotFound('Package not found');
+        case 'Package not found in pending package of user':
+          throw new NotFound('Package not found in pending package of user');
         default:
           throw new InternalServerErrorException();
       }
