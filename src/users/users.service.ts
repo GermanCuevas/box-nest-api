@@ -46,19 +46,23 @@ export class UsersService {
     const { packageId, userId } = body;
     const user = await this.userModel.findById(userId);
     if (!user) throw new Error('User not found');
+
+    const indexPendingPackage = user.packagesPending.indexOf(packageId);
+
+    if (indexPendingPackage !== -1) {
+      user.packagesPending.splice(indexPendingPackage, 1);
+    } else {
+      throw new Error('Package not found in pending package of user');
+    }
+
     const updatedPackage = await this.packageModel.findByIdAndUpdate(packageId, {
       status: 'created'
     });
     if (!updatedPackage) {
       throw new Error('Package not found');
     }
-    updatedPackage.save();
 
-    return updatedPackage;
+    user.save();
+    return user;
   }
 }
-
-//TODO: packageid por body
-//TODO: user id por body
-//TODO: cambiar el estado a package 'created'
-//TODO: en el arreglo de packagePending -> USER, recorrerlo y buscar el packgeid, y eliminarlo
