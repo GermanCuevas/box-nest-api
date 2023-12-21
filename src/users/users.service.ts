@@ -1,41 +1,43 @@
 import { Injectable } from '@nestjs/common';
-// import { CreateUserDto } from './dto/create-user.dto';
-// import { UpdateUserDto } from './dto/update-user.dto';
-// import { CreatePackageDto } from 'src/packages/dto/create-package.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Package } from 'src/packages/entities/package.entity';
 import { Model } from 'mongoose';
+import { AssignPackageUserDto } from './dto/assignPackage-user.dto';
+import { User } from 'src/auth/entities/users.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(Package.name)
-    private packageModel: Model<Package>
+    private packageModel: Model<Package>,
+    @InjectModel(User.name)
+    private userModel: Model<User>
   ) {}
 
-  async findPendingPackages() {
-    const packages = await this.packageModel.find({ status: 'pending' });
-    if (!packages) throw new Error('Pending packages not found');
+  async findAvailablePackages() {
+    const packages = await this.packageModel.find({ status: 'created' });
+    if (!packages) throw new Error('Created packages not found');
     return packages;
   }
 
-  // create(createUserDto: CreateUserDto) {
-  //   return 'This action adds a new user';
-  // }
+  async assignPackageToUser(body: AssignPackageUserDto) {
+    const { packagesIds, userId } = body;
 
-  // findAll() {
-  //   return `This action returns all users`;
-  // }
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new Error('User not found');
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} user`;
-  // }
+    const arrayPromises = packagesIds.map(async (idPackage) => {
+      const eachPackage = await this.packageModel.findByIdAndUpdate(idPackage, {
+        status: 'pending'
+      });
+      if (!eachPackage) {
+        throw new Error('Package not found');
+      }
+      return user.packagesPending.push(idPackage);
+    });
+    await Promise.all(arrayPromises);
+    user.save();
 
-  // update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} user`;
-  // }
+    return;
+  }
 }
