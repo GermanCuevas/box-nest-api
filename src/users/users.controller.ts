@@ -13,7 +13,7 @@ import { Public } from 'src/common/guards/auth.guard';
 import { NotFound } from 'src/common/exceptions/exceptions';
 import { AssignPackageUserDto } from './dto/assignPackage-user.dto';
 import { PackageSingleStatusDto } from './dto/packageSingleStatus.dto';
-
+import { PackagePendingAndInCourseDto } from './dto/packagePendingAndInCourse.dto';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -111,6 +111,26 @@ export class UsersController {
           throw new NotFound('Package not found');
         case 'Package not found in pending package of user':
           throw new NotFound('Package not found in pending package of user');
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+  }
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Get('packagePendingAndInCourse')
+  async packagePendingAndInCourse(
+    @Body() packagePendingAndInCourseDto: PackagePendingAndInCourseDto
+  ) {
+    try {
+      const packagePendingAndInCourse = await this.usersService.packagePendingAndInCourse(
+        packagePendingAndInCourseDto
+      );
+      return packagePendingAndInCourse;
+    } catch (error) {
+      switch (error.message) {
+        case 'User not found':
+          throw new NotFound('User not found');
         default:
           throw new InternalServerErrorException();
       }
