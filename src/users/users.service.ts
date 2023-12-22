@@ -81,7 +81,7 @@ export class UsersService {
     }
 
     const updatedPackage = await this.packageModel.findByIdAndUpdate(packageId, {
-      status: 'inCourse'
+      status: 'in course'
     });
 
     if (!updatedPackage) {
@@ -89,6 +89,21 @@ export class UsersService {
     }
 
     user.save();
-    return user;
+    return;
+  }
+
+  async putPackageInDelivered(body: PackageSingleStatusDto) {
+    const { packageId, userId } = body;
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new Error('User not found');
+    user.packageInCourse = null;
+    const updatedPackage = await this.packageModel.findByIdAndUpdate(packageId, {
+      status: 'delivered'
+    });
+    if (!updatedPackage) {
+      throw new Error('Package not found');
+    }
+    user.save();
+    return;
   }
 }

@@ -95,4 +95,25 @@ export class UsersController {
       }
     }
   }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Put('putPackageInDelivered')
+  async putPackageInDelivered(@Body() packageSingleStatusDto: PackageSingleStatusDto) {
+    try {
+      const putPackageInDelivered = this.usersService.putPackageInDelivered(packageSingleStatusDto);
+      return putPackageInDelivered;
+    } catch (error) {
+      switch (error.message) {
+        case 'User not found':
+          throw new NotFound();
+        case 'Package not found':
+          throw new NotFound('Package not found');
+        case 'Package not found in pending package of user':
+          throw new NotFound('Package not found in pending package of user');
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+  }
 }
