@@ -5,7 +5,7 @@ import { Document } from 'mongoose';
 enum StatusOptions {
   in_course = 'in course',
   pending = 'pending',
-  deliveried = 'deliveried',
+  delivered = 'delivered',
   created = 'created'
 }
 
