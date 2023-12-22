@@ -6,6 +6,8 @@ import { AssignPackageUserDto } from './dto/assignPackage-user.dto';
 import { User } from 'src/auth/entities/users.entity';
 import { PackageSingleStatusDto } from './dto/packageSingleStatus.dto';
 import { PackagePendingAndInCourseDto } from './dto/packagePendingAndInCourse.dto';
+import { HistoryDto } from './dto/history.dto';
+import { History } from '../history/entities/history.entity';
 
 @Injectable()
 export class UsersService {
@@ -13,7 +15,9 @@ export class UsersService {
     @InjectModel(Package.name)
     private packageModel: Model<Package>,
     @InjectModel(User.name)
-    private userModel: Model<User>
+    private userModel: Model<User>,
+    @InjectModel(History.name)
+    private historyModel: Model<History>
   ) {}
 
   async findAvailablePackages() {
@@ -127,5 +131,10 @@ export class UsersService {
     } else {
       return arrPackages;
     }
+  }
+  async addHistory(body: HistoryDto) {
+    const createHistory = await this.historyModel.create(body);
+    if (!createHistory) throw new Error('The package history was not created');
+    return createHistory;
   }
 }
