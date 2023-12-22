@@ -10,10 +10,11 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Public } from 'src/common/guards/auth.guard';
-import { NotFound } from 'src/common/exceptions/exceptions';
+import { BadRequest, NotFound } from 'src/common/exceptions/exceptions';
 import { AssignPackageUserDto } from './dto/assignPackage-user.dto';
 import { PackageSingleStatusDto } from './dto/packageSingleStatus.dto';
 import { PackagePendingAndInCourseDto } from './dto/packagePendingAndInCourse.dto';
+import { HistoryDto } from './dto/history.dto';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -131,6 +132,23 @@ export class UsersController {
       switch (error.message) {
         case 'User not found':
           throw new NotFound('User not found');
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+  }
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Post('addHistory')
+  async finishDelivery(@Body() historyDto: HistoryDto) {
+    try {
+      const history = await this.usersService.addHistory(historyDto);
+      return history;
+    } catch (error) {
+      console.log(error);
+      switch (error.message) {
+        case 'The package history was not created':
+          throw new BadRequest();
         default:
           throw new InternalServerErrorException();
       }
