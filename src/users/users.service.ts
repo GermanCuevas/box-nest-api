@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { AssignPackageUserDto } from './dto/assignPackage-user.dto';
 import { User } from 'src/auth/entities/users.entity';
 import { PackageSingleStatusDto } from './dto/packageSingleStatus.dto';
+import { PackagePendingAndInCourseDto } from './dto/packagePendingAndInCourse.dto';
 
 @Injectable()
 export class UsersService {
@@ -105,5 +106,26 @@ export class UsersService {
     }
     user.save();
     return;
+  }
+
+  async packagePendingAndInCourse(body: PackagePendingAndInCourseDto) {
+    const { userId } = body;
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new Error('User not found');
+
+    const arrPackagesId = user.packagesPending;
+    if (user.packageInCourse) arrPackagesId.push(user.packageInCourse);
+
+    //* Utilizar el método find para obtener documentos según los IDs en arrPackagesId
+    const arrPackages = await this.packageModel.find({ _id: { $in: arrPackagesId } }).exec();
+    const indexDocCreated = arrPackages.findIndex((el) => el.status === 'in course');
+
+    if (indexDocCreated !== -1) {
+      const docCreated = arrPackages.splice(indexDocCreated, 1);
+
+      return [docCreated, ...arrPackages];
+    } else {
+      return arrPackages;
+    }
   }
 }
