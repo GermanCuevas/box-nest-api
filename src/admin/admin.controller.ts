@@ -35,9 +35,11 @@ export class AdminController {
     return this.adminService.create(createAdminDto);
   } */
 
-  @Get()
-  findAll() {
-    return this.adminService.findAll();
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Get('deliveryDetails/:date')
+  deliveryDetails(@Param('date') date: string) {
+    return this.adminService.deliveryDetails(date);
   }
 
   @Get(':id')
@@ -50,3 +52,4 @@ export class AdminController {
     return this.adminService.remove(+id);
   }
 }
+// ! administradores - repartos pendientes
