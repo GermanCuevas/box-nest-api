@@ -8,6 +8,7 @@ import { CreatePackageDto } from 'src/packages/dto/create-package.dto';
 // import { UpdatePackageDto } from '../packages/dto/update-package.dto';
 import { UpdateUserStatusDto } from './dto/update-userStatus.dto';
 import { User } from 'src/auth/entities/users.entity';
+import { History } from 'src/history/entities/history.entity';
 
 @Injectable()
 export class AdminService {
@@ -15,7 +16,9 @@ export class AdminService {
     @InjectModel(Package.name)
     private packagesModel: Model<Package>,
     @InjectModel(User.name)
-    private userModel: Model<User>
+    private userModel: Model<User>,
+    @InjectModel(History.name)
+    private historyModel: Model<History>
   ) {}
 
   async addPackage(createPackageDto: CreatePackageDto) {
@@ -36,6 +39,12 @@ export class AdminService {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  async deliveryDetails(date: string) {
+    const users = await this.userModel.find();
+
+    return users;
   }
 
   findAll() {

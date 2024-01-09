@@ -102,13 +102,18 @@ export class UsersService {
     const user = await this.userModel.findById(userId);
     if (!user) throw new Error('User not found');
     user.packageInCourse = null;
-    const updatedPackage = await this.packageModel.findByIdAndUpdate(packageId, {
-      status: 'delivered'
-    });
-    if (!updatedPackage) {
+
+    const packageDelivered = await this.packageModel.findById(packageId).lean();
+    if (!packageDelivered) {
       throw new Error('Package not found');
     }
-    user.save();
+
+    const bodyHistory: HistoryDto = { ...packageDelivered, status: 'delivered', userId: userId };
+    const createHistory = await this.historyModel.create(bodyHistory);
+    if (!createHistory) throw new Error('The package history was not created');
+
+    const deletedPackage = await this.packageModel.findByIdAndDelete(packageId);
+    if (!deletedPackage) throw new Error('Package not deleted');
     return;
   }
 
@@ -131,10 +136,5 @@ export class UsersService {
     } else {
       return arrPackages;
     }
-  }
-  async addHistory(body: HistoryDto) {
-    const createHistory = await this.historyModel.create(body);
-    if (!createHistory) throw new Error('The package history was not created');
-    return createHistory;
   }
 }
