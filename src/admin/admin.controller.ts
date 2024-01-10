@@ -30,10 +30,10 @@ export class AdminController {
     return this.adminService.updateUserStatus(id, updateUserStatusDto);
   }
 
-  /* @Post()
-  create(@Body() createAdminDto: CreateAdminDto) {
-    return this.adminService.create(createAdminDto);
-  } */
+  // ? @Post()
+  // create(@Body() createAdminDto: CreateAdminDto) {
+  //   return this.adminService.create(createAdminDto);
+  // }
 
   @Public()
   @HttpCode(HttpStatus.OK)

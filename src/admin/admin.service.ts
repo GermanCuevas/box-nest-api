@@ -43,8 +43,28 @@ export class AdminService {
 
   async deliveryDetails(date: string) {
     const users = await this.userModel.find();
+    const packages = await this.packagesModel.find();
+    const packagesDelivered = await this.historyModel.find();
+    const totalPackages = packages.concat(packagesDelivered);
+    const usersAbles = users.filter((user) => !user.isDisabled);
 
-    return users;
+    const allDetails = {
+      users: {
+        availables: usersAbles,
+        availablesLength: usersAbles.length,
+        totalUsers: users,
+        totalUsersLength: users.length,
+        percentage: (usersAbles.length / users.length) * 100
+      },
+      packages: {
+        totalPackages,
+        totalPackagesLength: totalPackages.length,
+        packagesDeliveredLength: packagesDelivered.length,
+        percentage: (packagesDelivered.length / totalPackages.length) * 100
+      }
+    };
+
+    return allDetails;
   }
 
   findAll() {
