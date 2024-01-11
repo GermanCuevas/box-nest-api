@@ -58,27 +58,34 @@ export class AdminService {
   async updateUserStatus(id: string, updateUserStatusDto: UpdateUserStatusDto) {
     try {
       const user = await this.userModel.findByIdAndUpdate(id, updateUserStatusDto, { new: true });
-
       await user.save();
       return user;
     } catch (error) {
       console.error(error);
     }
   }
-  async deliveryDetailsUser(userId: string, date: string) {
-    return { userId, date };
+  async deliveryDetailsUser(userId: string) {
+    const packagesDelivered = await this.historyModel.find({ userId });
+    if (!packagesDelivered) throw new Error('Package not found');
+
+    return packagesDelivered;
   }
 
   async deliveryDetails(date: string) {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(startOfDay);
+    endOfDay.setDate(endOfDay.getDate() + 1);
+
     const objTopPackages: TopPackages = {};
     const users = await this.userModel.find();
     const packages = await this.packagesModel.find();
     const packagesDelivered = await this.historyModel.find().populate('userId');
     const totalPackages = packages.concat(packagesDelivered);
     packagesDelivered.forEach(({ userId }) => {
-      //sd
-      // para que reconozca la estructura de un populate usar el unknowm
-      // unknown es un tipo que representa un valor desconocido. Es más seguro que any ya que requiere una verificación de tipo explícita antes de ser utilizado.
+      //* para que reconozca la estructura de un populate usar el unknowm
+      //* unknown es un tipo que representa un valor desconocido. Es más seguro que any ya que requiere una verificación de tipo explícita antes de ser utilizado.
+
       const infoUser = userId as unknown as UserInternal;
       if (!objTopPackages[infoUser.email]) objTopPackages[infoUser.email] = {};
       if (!objTopPackages[infoUser.email]['recoveried']) {
@@ -112,6 +119,36 @@ export class AdminService {
     };
 
     return allDetails;
+  }
+
+  async getAllUsers() {
+    const users = await this.userModel.find();
+    if (!users) throw new Error('Users not found');
+    return users;
+  }
+
+  async getDeliveredPackagesByDate(date: string) {
+    // Convierte la cadena de fecha a un objeto Date
+    const startOfDay = new Date(date);
+
+    // Establece la hora a las 00:00:00 del día seleccionado
+    startOfDay.setHours(0, 0, 0, 0);
+
+    // Calcula la fecha del siguiente día para obtener el rango completo del día seleccionado
+    const endOfDay = new Date(startOfDay);
+    endOfDay.setDate(endOfDay.getDate() + 1);
+    const packages = await this.historyModel.find({
+      deliveriedDate: {
+        $gte: startOfDay,
+        $lt: endOfDay
+      }
+    });
+
+    if (!packages || packages.length === 0) {
+      throw new Error('Packages not found');
+    }
+
+    return { deliveredPackages: packages, totalDeliveredPackages: packages.length };
   }
 
   findAll() {

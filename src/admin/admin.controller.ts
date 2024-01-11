@@ -17,6 +17,9 @@ import { UpdateUserStatusDto } from './dto/update-userStatus.dto';
 import { DeliveredAdminDto } from './dto/delivered-admin-dto';
 import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
 import { DateValidationPipe } from 'src/common/pipes/date-validation.pipe';
+
+import { BadRequest } from 'src/common/exceptions/exceptions';
+import { InternalServerErrorException } from '@nestjs/common';
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
@@ -34,31 +37,59 @@ export class AdminController {
     return this.adminService.updateUserStatus(id, updateUserStatusDto);
   }
 
-  // ? @Post()
-  // create(@Body() createAdminDto: CreateAdminDto) {
-  //   return this.adminService.create(createAdminDto);
-  // }
-
   @Public()
   @HttpCode(HttpStatus.OK)
   @Get('deliveryDetails/:date')
-  deliveryDetails(@Param('date') date: string) {
+  deliveryDetails(@Param('date', DateValidationPipe) date: string) {
     return this.adminService.deliveryDetails(date);
   }
 
   @Public()
   @HttpCode(HttpStatus.OK)
-  @Get('userDeliveryDetails/:date/:userId')
-  userDeliveryDetails(
-    @Param('userId', ParseMongoIdPipe) userId: string,
-    @Param('date', DateValidationPipe) date: string
-  ) {
-    return this.adminService.deliveryDetailsUser(userId, date);
+  @Get('userDeliveryDetails/:userId')
+  async userDeliveryDetails(@Param('userId', ParseMongoIdPipe) userId: string) {
+    try {
+      return await this.adminService.deliveryDetailsUser(userId);
+    } catch (error) {
+      switch (error) {
+        case 'Package not found':
+          throw new BadRequest();
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.adminService.findOne(+id);
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Get('users')
+  getAllUsers() {
+    try {
+      return this.adminService.getAllUsers();
+    } catch (error) {
+      switch (error) {
+        case 'Users not found':
+          throw new BadRequest();
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Get('deliveredPackagesByDate/:date')
+  getDeliveredPackagesByDate(@Param('date', DateValidationPipe) date: string) {
+    try {
+      return this.adminService.getDeliveredPackagesByDate(date);
+    } catch (error) {
+      switch (error) {
+        case 'Packages not found':
+          throw new BadRequest();
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
   }
 
   @Delete(':id')
