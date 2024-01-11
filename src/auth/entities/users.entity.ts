@@ -15,13 +15,13 @@ export class User extends Document {
   password: string;
   @Prop({ type: Boolean, default: false })
   isAdmin: boolean;
-  @Prop({ type: Boolean, default: true })
+  @Prop({ type: Boolean, default: false })
   isDisabled: boolean;
   @Prop({ type: String })
   salt: string;
   @Prop({ type: [Number], default: [0, 0] })
   coordinates: number[];
-  @Prop({ type: String })
+  @Prop({ type: String, default: '' })
   imgAvatar: string;
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Package' }], default: [] })
   packagesPending: MongooseSchema.Types.ObjectId[];

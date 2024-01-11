@@ -7,12 +7,16 @@ import {
   Param,
   Delete,
   HttpCode,
-  HttpStatus
+  HttpStatus,
+  ParseIntPipe
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { Public } from 'src/common/guards/auth.guard';
 import { CreatePackageDto } from 'src/packages/dto/create-package.dto';
 import { UpdateUserStatusDto } from './dto/update-userStatus.dto';
+import { DeliveredAdminDto } from './dto/delivered-admin-dto';
+import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
+import { DateValidationPipe } from 'src/common/pipes/date-validation.pipe';
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
@@ -40,6 +44,16 @@ export class AdminController {
   @Get('deliveryDetails/:date')
   deliveryDetails(@Param('date') date: string) {
     return this.adminService.deliveryDetails(date);
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Get('userDeliveryDetails/:date/:userId')
+  userDeliveryDetails(
+    @Param('userId', ParseMongoIdPipe) userId: string,
+    @Param('date', DateValidationPipe) date: string
+  ) {
+    return this.adminService.deliveryDetailsUser(userId, date);
   }
 
   @Get(':id')
