@@ -8,7 +8,9 @@ import { PackageSingleStatusDto } from './dto/packageSingleStatus.dto';
 import { PackagePendingAndInCourseDto } from './dto/packagePendingAndInCourse.dto';
 import { HistoryDto } from './dto/history.dto';
 import { History } from '../history/entities/history.entity';
-
+export interface UserWithLastSwornStatement extends User {
+  lastSwornStatement: Date;
+}
 @Injectable()
 export class UsersService {
   constructor(
@@ -140,11 +142,16 @@ export class UsersService {
   }
 
   async lastSwornStatement({ id }: any) {
-    const user = await this.userModel.findById({ _id: id });
-    if (!user) throw new Error('User not found');
-    user.lastSwornStatement = new Date();
-    user.save();
+    const updatedUser = (await this.userModel.findOneAndUpdate(
+      { _id: id },
+      { $set: { lastSwornStatement: new Date() } },
+      { new: true }
+    )) as UserWithLastSwornStatement;
 
-    return user;
+    if (!updatedUser) {
+      throw new Error('User not found');
+    }
+
+    return updatedUser;
   }
 }
