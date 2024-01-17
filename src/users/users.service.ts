@@ -34,7 +34,8 @@ export class UsersService {
 
     const arrayPromises = packagesIds.map(async (idPackage) => {
       const eachPackage = await this.packageModel.findByIdAndUpdate(idPackage, {
-        status: 'pending'
+        status: 'pending',
+        assignedDate: new Date()
       });
       if (!eachPackage) {
         throw new Error('Package not found');

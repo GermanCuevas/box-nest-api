@@ -71,17 +71,35 @@ export class AdminService {
     return packagesDelivered;
   }
 
-  async deliveryDetails(date: string) {
-    const startOfDay = new Date(date);
+  async deliveryDetails(selectedDate: string) {
+    console.log(selectedDate);
+    //TODO: Traer dependiendo si selectedDate es mayor o igual (>=) a assignedDate de packages
+    //TODO: Mostrar los paquetes que son distintos a status: created
+    const startOfDay = new Date(selectedDate);
     startOfDay.setHours(0, 0, 0, 0);
+
     const endOfDay = new Date(startOfDay);
     endOfDay.setDate(endOfDay.getDate() + 1);
 
-    const objTopPackages: TopPackages = {};
+    // $lt: endOfDay
+
+    const packages = await this.packagesModel.find({
+      status: { $ne: 'created' },
+      assignedDate: {
+        $lt: endOfDay
+      }
+    });
+
+    const packagesDelivered = await this.historyModel
+      .find({ deliveriedDate: { $gte: startOfDay } })
+      .populate('userId');
+
+    const totalPackages = { ...packages, ...packagesDelivered };
     const users = await this.userModel.find();
-    const packages = await this.packagesModel.find();
-    const packagesDelivered = await this.historyModel.find().populate('userId');
-    const totalPackages = packages.concat(packagesDelivered);
+
+    //* Cochinadas de Ivan
+    const objTopPackages: TopPackages = {};
+    //! Es para sacar el top de users con mas repartos
     packagesDelivered.forEach(({ userId }) => {
       //* para que reconozca la estructura de un populate usar el unknowm
       //* unknown es un tipo que representa un valor desconocido. Es más seguro que any ya que requiere una verificación de tipo explícita antes de ser utilizado.
@@ -98,8 +116,6 @@ export class AdminService {
     const sortedEntries = Object.entries(objTopPackages)
       .sort((a, b) => b[1].recoveried - a[1].recoveried)
       .map((x) => ({ email: x[0], imageUrl: x[1].image, deliveredNum: x[1].recoveried }));
-
-    console.log(sortedEntries);
 
     const allDetails = {
       users: {
