@@ -21,4 +21,8 @@ export class CreateUser {
   // coordinates: number[];
   @IsOptional()
   imgAvatar: string;
+
+  @IsOptional()
+  @IsString()
+  lastSwornStatement: Date;
 }
