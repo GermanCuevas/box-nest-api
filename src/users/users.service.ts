@@ -138,4 +138,13 @@ export class UsersService {
       return arrPackages;
     }
   }
+
+  async lastSwornStatement({ id }: any) {
+    const user = await this.userModel.findById({ _id: id });
+    if (!user) throw new Error('User not found');
+    user.lastSwornStatement = new Date();
+    user.save();
+
+    return user;
+  }
 }

@@ -27,6 +27,8 @@ export class User extends Document {
   packagesPending: MongooseSchema.Types.ObjectId[];
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Package', default: null })
   packageInCourse: MongooseSchema.Types.ObjectId | null;
+  @Prop({ type: Date, default: null })
+  lastSwornStatement: Date;
 
   checkpass: Function;
 }

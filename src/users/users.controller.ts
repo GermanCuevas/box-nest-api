@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   InternalServerErrorException,
+  Param,
   Post,
   Put
 } from '@nestjs/common';
@@ -132,6 +133,22 @@ export class UsersController {
         packagePendingAndInCourseDto
       );
       return packagePendingAndInCourse;
+    } catch (error) {
+      switch (error.message) {
+        case 'User not found':
+          throw new NotFound('User not found');
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Put('lastSwornStatement/:id')
+  async lastSwornStatement(@Param() id: any) {
+    try {
+      return this.usersService.lastSwornStatement(id);
     } catch (error) {
       switch (error.message) {
         case 'User not found':
