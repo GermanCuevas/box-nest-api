@@ -33,6 +33,10 @@ export class Package extends Document {
   receptorName: string;
   @Prop({ type: Number, required: true })
   weight: number;
+  @Prop({ type: Date, default: Date.now })
+  createdAt: Date;
+  @Prop({ type: Date, default: null })
+  assignedDate: Date;
 }
 
 export const PackageSchema = SchemaFactory.createForClass(Package);

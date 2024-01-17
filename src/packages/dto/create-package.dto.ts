@@ -27,11 +27,19 @@ export class CreatePackageDto {
 
   @IsNotEmpty({ message: 'DeadLine is required' })
   @IsString()
-  deadLine: Date;
+  deadLine: Date; //se puede ordenar los paquetes con fecha limite proxima
 
   @IsOptional()
   @IsString()
   deliveriedDate: Date;
+
+  @IsOptional()
+  @IsString()
+  createdAt: Date;
+
+  @IsOptional()
+  @IsString()
+  assignedDate: Date;
 
   @IsOptional()
   @IsArray()

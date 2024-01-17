@@ -23,6 +23,8 @@ export class History extends Document {
   weight: number;
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
   userId: MongooseSchema.Types.ObjectId;
+  @Prop({ type: Date, default: Date.now })
+  createdAt: Date;
 }
 
 export const HistorySchema = SchemaFactory.createForClass(History);
