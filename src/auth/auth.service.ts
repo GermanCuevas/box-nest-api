@@ -36,7 +36,7 @@ export class AuthService {
     if (!user) throw new Error('User not found');
     //const validate = user.validatePassword('sds');
     await user.checkpass(loginUser.password);
-    const payload = { id_user: user._id, name: user.name, mail: user.email };
+    const payload = { id_user: user._id, name: user.name, mail: user.email, isAdmin: user.isAdmin };
     const token = await this.jwtService.signAsync(payload);
     return { token, user: payload };
   }
