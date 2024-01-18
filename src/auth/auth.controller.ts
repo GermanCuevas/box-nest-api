@@ -50,7 +50,7 @@ export class AuthController {
     try {
       const result = await this.authService.loginUser(LoginUserDto, res);
       res.cookie('token', result.token);
-      return res.sendStatus(200);
+      return res.status(200).send(result.user);
     } catch (error) {
       switch (error.message) {
         case 'User not found':
