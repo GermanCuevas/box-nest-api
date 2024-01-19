@@ -25,13 +25,13 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('Box Api')
+    .setDescription('The Box app API description')
     .setVersion('1.0')
-    .addTag('cats')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('enpoints_doc', app, document);
+  SwaggerModule.setup('docs', app, document);
 
   await app.listen(3001);
 }

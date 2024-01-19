@@ -20,6 +20,9 @@ import { DateValidationPipe } from 'src/common/pipes/date-validation.pipe';
 
 import { BadRequest } from 'src/common/exceptions/exceptions';
 import { InternalServerErrorException } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+
+@ApiTags('admin')
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}

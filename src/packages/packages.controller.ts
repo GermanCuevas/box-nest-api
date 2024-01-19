@@ -14,7 +14,9 @@ import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
 import { Public } from 'src/common/guards/auth.guard';
 import { AddPackageUser } from './dto/add-package-user.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('packages')
 @Controller('packages')
 export class PackagesController {
   constructor(private readonly packagesService: PackagesService) {}

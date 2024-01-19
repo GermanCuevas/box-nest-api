@@ -19,7 +19,8 @@ import { CreateUser } from './dto/create-user.dto';
 import { LoginUser } from './dto/login-user.dto';
 import { Response } from 'express';
 import { BadRequest, Conflict, NotFound } from 'src/common/exceptions/exceptions';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
