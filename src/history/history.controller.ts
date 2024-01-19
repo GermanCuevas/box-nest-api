@@ -2,7 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { HistoryService } from './history.service';
 import { CreateHistoryDto } from './dto/create-history.dto';
 import { UpdateHistoryDto } from './dto/update-history.dto';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('admin')
 @Controller('history')
 export class HistoryController {
   constructor(private readonly historyService: HistoryService) {}

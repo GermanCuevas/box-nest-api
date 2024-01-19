@@ -43,7 +43,7 @@ export class PackagesService {
     }
   }
 
-  findAll() {
+  async findAll() {
     return `This action returns all packages`;
   }
 

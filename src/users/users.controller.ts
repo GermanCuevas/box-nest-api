@@ -15,7 +15,9 @@ import { BadRequest, NotFound } from 'src/common/exceptions/exceptions';
 import { AssignPackageUserDto } from './dto/assignPackage-user.dto';
 import { PackageSingleStatusDto } from './dto/packageSingleStatus.dto';
 import { PackagePendingAndInCourseDto } from './dto/packagePendingAndInCourse.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
