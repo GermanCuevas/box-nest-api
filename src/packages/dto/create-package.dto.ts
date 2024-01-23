@@ -13,6 +13,14 @@ export class CreatePackageDto {
   @IsString()
   address: string;
 
+  @IsNotEmpty({ message: 'Address number is required' })
+  @IsNumber()
+  addressNumber: number;
+
+  @IsNotEmpty({ message: 'Postal code is required' })
+  @IsNumber()
+  postalCode: number;
+
   @IsOptional()
   @IsString()
   status: string;
