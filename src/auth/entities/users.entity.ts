@@ -15,6 +15,7 @@ export class User extends Document {
   password: string;
   @Prop({ type: Boolean, default: false })
   isAdmin: boolean;
+  // isDisabled lo maneja el admin
   @Prop({ type: Boolean, default: false })
   isDisabled: boolean;
   @Prop({ type: String })
@@ -29,6 +30,9 @@ export class User extends Document {
   packageInCourse: MongooseSchema.Types.ObjectId | null;
   @Prop({ type: Date, default: null })
   lastSwornStatement: Date;
+  // isSuitable lo maneja el resultado del statement
+  @Prop({ type: Boolean, default: true })
+  isSuitable: boolean;
 
   checkpass: Function;
 }

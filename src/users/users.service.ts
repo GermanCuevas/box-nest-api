@@ -144,7 +144,7 @@ export class UsersService {
   async lastSwornStatement({ id }: any) {
     const updatedUser = (await this.userModel.findOneAndUpdate(
       { _id: id },
-      { $set: { lastSwornStatement: new Date() } },
+      { $set: { lastSwornStatement: new Date(), isSuitable: false } },
       { new: true }
     )) as UserWithLastSwornStatement;
 
