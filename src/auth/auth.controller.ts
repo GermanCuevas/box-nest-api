@@ -64,6 +64,14 @@ export class AuthController {
     }
   }
 
+  @Public()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Post('logoutUser')
+  async logoutUser(@Res() res: Response) {
+    res.clearCookie('token');
+    res.sendStatus(204);
+  }
+
   @UseGuards(AuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
