@@ -28,3 +28,4 @@ jobs:
     - run: |
         touch .env
         echo "${{ secrets.BOX_ENV_FILE }}" > .env
+    - run: pm2 restart box
