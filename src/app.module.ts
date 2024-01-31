@@ -6,9 +6,10 @@ import { AdminModule } from './admin/admin.module';
 import { UsersModule } from './users/users.module';
 import { HistoryModule } from './history/history.module';
 
+//mongodb://mongodb:27017/BigFive
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://mongodb:27017/BigFive'),
+    MongooseModule.forRoot(process.env.MONGO_URI),
     AuthModule,
     PackagesModule,
     AdminModule,
