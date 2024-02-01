@@ -126,14 +126,10 @@ export class UsersController {
   }
   @Public()
   @HttpCode(HttpStatus.OK)
-  @Get('packagePendingAndInCourse')
-  async packagePendingAndInCourse(
-    @Body() packagePendingAndInCourseDto: PackagePendingAndInCourseDto
-  ) {
+  @Get('packagePendingAndInCourse/:userId')
+  async packagePendingAndInCourse(@Param('userId') userId: string) {
     try {
-      const packagePendingAndInCourse = await this.usersService.packagePendingAndInCourse(
-        packagePendingAndInCourseDto
-      );
+      const packagePendingAndInCourse = await this.usersService.packagePendingAndInCourse(userId);
       return packagePendingAndInCourse;
     } catch (error) {
       switch (error.message) {
