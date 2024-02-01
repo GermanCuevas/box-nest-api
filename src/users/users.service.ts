@@ -120,8 +120,7 @@ export class UsersService {
     return;
   }
 
-  async packagePendingAndInCourse(body: PackagePendingAndInCourseDto) {
-    const { userId } = body;
+  async packagePendingAndInCourse(userId: string) {
     const user = await this.userModel.findById(userId);
     if (!user) throw new Error('User not found');
 
@@ -133,7 +132,7 @@ export class UsersService {
     const indexDocCreated = arrPackages.findIndex((el) => el.status === 'in course');
 
     if (indexDocCreated !== -1) {
-      const docCreated = arrPackages.splice(indexDocCreated, 1);
+      const docCreated = arrPackages.splice(indexDocCreated, 1)[0];
 
       return [docCreated, ...arrPackages];
     } else {
