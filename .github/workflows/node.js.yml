@@ -27,6 +27,7 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: |
-        touch dist/.env
-        echo "${{ secrets.BOX_ENV_FILE }}" > dist/.env
+         touch .env
+         echo "${{ secrets.BOX_ENV_FILE }}" > .env
+         cp .env dist/
     - run: pm2 restart boxesBack
