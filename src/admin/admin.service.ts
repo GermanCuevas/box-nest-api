@@ -94,7 +94,7 @@ export class AdminService {
       .find({ deliveriedDate: { $gte: startOfDay } })
       .populate('userId');
 
-    const totalPackages = { ...packages, ...packagesDelivered };
+    const totalPackages = [...packages, ...packagesDelivered];
     const users = await this.userModel.find();
 
     //* Cochinadas de Ivan
@@ -159,6 +159,8 @@ export class AdminService {
         $lt: endOfDay
       }
     });
+
+    console.log(packages);
 
     if (!packages || packages.length === 0) {
       throw new Error('Packages not found');
