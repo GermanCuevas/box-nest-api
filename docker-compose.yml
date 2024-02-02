@@ -11,8 +11,8 @@ services:
     command: npm run start:dev
     volumes:
       - ./:/api
-    env_file:   # Se agrega esta línea para cargar las variables de entorno desde el archivo .env
-      - .env    
+    env_file: # Se agrega esta línea para cargar las variables de entorno desde el archivo .env
+      - .env
     networks:
       dev:
     depends_on:
