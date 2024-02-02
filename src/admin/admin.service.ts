@@ -94,9 +94,10 @@ export class AdminService {
       .find({ deliveriedDate: { $gte: startOfDay } })
       .populate('userId');
 
-    const totalPackages = { ...packages, ...packagesDelivered };
+    const totalPackages = [...packages, ...packagesDelivered];
     const users = await this.userModel.find();
-
+    //y bueno, aqui se hace la magia
+    //TODO: Hacer un top de usuarios con mas repartos
     //* Cochinadas de Ivan
     const objTopPackages: TopPackages = {};
     //! Es para sacar el top de users con mas repartos
@@ -159,6 +160,8 @@ export class AdminService {
         $lt: endOfDay
       }
     });
+
+    console.log(packages);
 
     if (!packages || packages.length === 0) {
       throw new Error('Packages not found');

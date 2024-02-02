@@ -9,7 +9,9 @@ import { HistoryModule } from './history/history.module';
 //mongodb://mongodb:27017/BigFive
 @Module({
   imports: [
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    MongooseModule.forRoot(
+      'mongodb+srv://box:boxtest@cluster0.ueqb6un.mongodb.net/?retryWrites=true&w=majority'
+    ),
     AuthModule,
     PackagesModule,
     AdminModule,
