@@ -96,7 +96,8 @@ export class AdminService {
 
     const totalPackages = [...packages, ...packagesDelivered];
     const users = await this.userModel.find();
-
+    //y bueno, aqui se hace la magia
+    //TODO: Hacer un top de usuarios con mas repartos
     //* Cochinadas de Ivan
     const objTopPackages: TopPackages = {};
     //! Es para sacar el top de users con mas repartos
