@@ -94,6 +94,8 @@ export class UsersController {
       switch (error.message) {
         case 'User not found':
           throw new NotFound();
+        case 'User already has package in course':
+          throw new BadRequest('User already has package in course');
         case 'Package not found':
           throw new NotFound('Package not found');
         case 'Package not found in pending package of user':

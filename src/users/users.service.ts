@@ -55,12 +55,12 @@ export class UsersService {
     const user = await this.userModel.findById(userId);
     if (!user) throw new Error('User not found');
 
-    const indexPendingPackage = user.packagesPending.indexOf(packageId);
+    const cancelingPackageInCourse = user.packageInCourse;
 
-    if (indexPendingPackage !== -1) {
-      user.packagesPending.splice(indexPendingPackage, 1);
+    if (cancelingPackageInCourse) {
+      user.packageInCourse = null;
     } else {
-      throw new Error('Package not found in pending package of user');
+      throw new Error('Package not found in user`s package in course');
     }
 
     const updatedPackage = await this.packageModel.findByIdAndUpdate(packageId, {
@@ -69,7 +69,6 @@ export class UsersService {
     if (!updatedPackage) {
       throw new Error('Package not found');
     }
-
     user.save();
     return user;
   }
@@ -78,6 +77,8 @@ export class UsersService {
     const { packageId, userId } = body;
     const user = await this.userModel.findById(userId);
     if (!user) throw new Error('User not found');
+
+    if (user.packageInCourse) throw new Error('User already has package in course');
 
     const indexPendingPackage = user.packagesPending.indexOf(packageId);
 
