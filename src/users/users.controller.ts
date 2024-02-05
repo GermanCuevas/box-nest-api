@@ -145,6 +145,23 @@ export class UsersController {
 
   @Public()
   @HttpCode(HttpStatus.OK)
+  @Get('packages/:packageId')
+  async packages(@Param('packageId') packageId: string) {
+    try {
+      return this.usersService.packagesInfo(packageId);
+    } catch (error) {
+      console.error(error);
+      switch (error.message) {
+        case 'Package not found':
+          throw new NotFound('Package not found');
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
   @Put('lastSwornStatement/:id')
   async lastSwornStatement(@Param() id: any) {
     try {
