@@ -154,4 +154,13 @@ export class UsersService {
 
     return updatedUser;
   }
+
+  async packagesInfo(packageId: string) {
+    const packageInfo = await this.packageModel.findById(packageId);
+
+    if (!packageInfo) {
+      throw new Error('Package not found');
+    }
+    return packageInfo;
+  }
 }
