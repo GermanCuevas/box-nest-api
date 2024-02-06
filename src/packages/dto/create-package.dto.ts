@@ -25,7 +25,7 @@ export class CreatePackageDto {
   @IsString()
   status: string;
 
-  @IsNotEmpty({ message: 'DeliveryCode is required' })
+  @IsOptional()
   @IsString()
   deliveryCode: string;
 

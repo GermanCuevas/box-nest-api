@@ -12,6 +12,7 @@ import { History } from 'src/history/entities/history.entity';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { userInfo } from 'os';
 import { DeliveredAdminDto } from './dto/delivered-admin-dto';
+import { deliveryCodeGenerator } from 'src/utils/deliveryCodeGenerator';
 
 interface UserInternal {
   _id: Types.ObjectId;
@@ -48,7 +49,15 @@ export class AdminService {
 
   async addPackage(createPackageDto: CreatePackageDto) {
     try {
+      let deliveryCode = deliveryCodeGenerator();
+      while (await this.packagesModel.findOne({ deliveryCode: deliveryCode })) {
+        deliveryCode = deliveryCodeGenerator();
+      }
+
+      createPackageDto.deliveryCode = deliveryCode;
+
       const packageCreate = await this.packagesModel.create(createPackageDto);
+
       return packageCreate;
     } catch (error) {
       throw new InternalServerErrorException();
