@@ -179,6 +179,53 @@ export class AdminService {
     return { deliveredPackages: packages, totalDeliveredPackages: packages.length };
   }
 
+  async getDeliveryUsers() {
+    const users = await this.userModel.find();
+    const map = await Promise.all(
+      users
+        .map(async (e) => {
+          if (!e.isAdmin) {
+            const oneHistory = await this.historyModel.find({ userId: e.id });
+            const totalPackages =
+              e.packagesPending.length + (e.packageInCourse ? 1 : 0) + oneHistory.length;
+            let percentage = oneHistory.length / totalPackages;
+            const percentageFixed = Number(percentage.toFixed(2));
+            percentage = percentageFixed * 10;
+            if (isNaN(percentage)) {
+              percentage = 0;
+            }
+            let status: string;
+            if (e.isDisabled) {
+              status = 'DESHABILITADO';
+            } else {
+              if (percentage === 100) {
+                status = 'COMPLETADO';
+              } else if (percentage === 0) {
+                status = 'INACTIVO';
+              } else {
+                status = 'EN CURSO';
+              }
+            }
+            console.log(status);
+
+            return {
+              id: e._id,
+              name: e.name,
+              status,
+              percentage
+            };
+          } else {
+            return null;
+          }
+        })
+        .filter((user) => user !== null)
+    );
+
+    console.log(map);
+    if (!users) throw new Error('Users not found');
+    return users;
+  }
+
   findAll() {
     return `This action returns all admin`;
   }
