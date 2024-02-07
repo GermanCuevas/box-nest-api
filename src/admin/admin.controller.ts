@@ -95,6 +95,26 @@ export class AdminController {
     }
   }
 
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Get('getDeliveryUsers')
+  async getDeliveryUsers() {
+    try {
+      //console.log(this.adminService)
+      //const users = await this.adminService.getAllUsers();
+      //const historyPackages = await this.h
+      //console.log(users);
+      return this.adminService.getDeliveryUsers();
+    } catch (error) {
+      switch (error) {
+        case 'There are no users':
+          throw new BadRequest();
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.adminService.remove(+id);
