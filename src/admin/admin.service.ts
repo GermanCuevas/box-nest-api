@@ -115,12 +115,15 @@ export class AdminService {
       //* unknown es un tipo que representa un valor desconocido. Es más seguro que any ya que requiere una verificación de tipo explícita antes de ser utilizado.
 
       const infoUser = userId as unknown as UserInternal;
-      if (!objTopPackages[infoUser.email]) objTopPackages[infoUser.email] = {};
-      if (!objTopPackages[infoUser.email]['recoveried']) {
-        objTopPackages[infoUser.email]['recoveried'] = 0;
+
+      if (infoUser) {
+        if (!objTopPackages[infoUser.email]) objTopPackages[infoUser.email] = {};
+        if (!objTopPackages[infoUser.email]['recoveried']) {
+          objTopPackages[infoUser.email]['recoveried'] = 0;
+        }
+        objTopPackages[infoUser.email]['recoveried']++;
+        objTopPackages[infoUser.email]['image'] = infoUser.imgAvatar;
       }
-      objTopPackages[infoUser.email]['recoveried']++;
-      objTopPackages[infoUser.email]['image'] = infoUser.imgAvatar;
     });
     const usersAbles = users.filter((user) => !user.isDisabled);
     const sortedEntries = Object.entries(objTopPackages)
@@ -181,7 +184,7 @@ export class AdminService {
 
   async getDeliveryUsers() {
     const users = await this.userModel.find();
-    const map = await Promise.all(
+    const usersDelivery = await Promise.all(
       users
         .map(async (e) => {
           if (!e.isAdmin) {
@@ -206,7 +209,6 @@ export class AdminService {
                 status = 'EN CURSO';
               }
             }
-            console.log(status);
 
             return {
               id: e._id,
@@ -221,9 +223,8 @@ export class AdminService {
         .filter((user) => user !== null)
     );
 
-    console.log(map);
     if (!users) throw new Error('Users not found');
-    return users;
+    return usersDelivery;
   }
 
   findAll() {
