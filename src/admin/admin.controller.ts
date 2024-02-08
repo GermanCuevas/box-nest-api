@@ -8,7 +8,8 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
-  ParseIntPipe
+  ParseIntPipe,
+  Put
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { Public } from 'src/common/guards/auth.guard';
@@ -108,6 +109,22 @@ export class AdminController {
     } catch (error) {
       switch (error) {
         case 'There are no users':
+          throw new BadRequest();
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+  }
+
+  @Public()
+  @Put('toggleHiddenHistoryAdmin/:id')
+  toggleHiddenHistoryAdmin(@Param('id') id: string) {
+    console.log('---------->ID PACKAGE', id);
+    try {
+      return this.adminService.toggleHiddenHistoryAdmin(id);
+    } catch (error) {
+      switch (error.message) {
+        case 'Package not found':
           throw new BadRequest();
         default:
           throw new InternalServerErrorException();

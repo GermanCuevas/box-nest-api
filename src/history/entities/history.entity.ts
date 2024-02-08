@@ -25,6 +25,9 @@ export class History extends Document {
   userId: MongooseSchema.Types.ObjectId;
   @Prop({ type: Date, default: Date.now })
   createdAt: Date;
+
+  @Prop({ type: Boolean, default: false })
+  hiddenHistory: boolean;
 }
 
 export const HistorySchema = SchemaFactory.createForClass(History);

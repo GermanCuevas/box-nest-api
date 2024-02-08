@@ -1,5 +1,6 @@
 import {
   IsArray,
+  IsBoolean,
   IsDate,
   IsEnum,
   IsNotEmpty,
@@ -60,4 +61,8 @@ export class CreatePackageDto {
   @IsNotEmpty({ message: 'Weight is required' })
   @IsNumber()
   weight: number;
+
+  @IsOptional()
+  @IsBoolean()
+  hiddenHistory: boolean;
 }
