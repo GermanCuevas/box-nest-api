@@ -126,6 +126,24 @@ export class UsersController {
       }
     }
   }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Get('history/:userId')
+  async getHistory(@Param('userId') userId: string) {
+    try {
+      const userIdHistory = await this.usersService.userIdHistory(userId);
+      return userIdHistory;
+    } catch (error) {
+      switch (error.message) {
+        case 'History not found':
+          throw new NotFound('History not found');
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+  }
+
   @Public()
   @HttpCode(HttpStatus.OK)
   @Get('packagePendingAndInCourse/:userId')
