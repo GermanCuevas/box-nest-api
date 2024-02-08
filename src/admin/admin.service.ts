@@ -55,7 +55,7 @@ export class AdminService {
       }
 
       createPackageDto.deliveryCode = deliveryCode;
-
+      createPackageDto.hiddenHistory = false;
       const packageCreate = await this.packagesModel.create(createPackageDto);
 
       return packageCreate;
@@ -227,6 +227,18 @@ export class AdminService {
     });
     if (!users) throw new Error('Users not found');
     return usersDelivery;
+  }
+
+  async toggleHiddenHistoryAdmin(id: string) {
+    let packageToToggle: any;
+    packageToToggle = await this.historyModel.findById(id);
+    if (!packageToToggle) {
+      packageToToggle = await this.packagesModel.findById(id);
+    }
+    if (!packageToToggle) throw new Error('Package not found');
+    packageToToggle.hiddenHistory = !packageToToggle.hiddenHistory;
+    await packageToToggle.save();
+    return packageToToggle;
   }
 
   findAll() {

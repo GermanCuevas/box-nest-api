@@ -53,6 +53,9 @@ export class Package extends Document {
   createdAt: Date;
   @Prop({ type: Date, default: null })
   assignedDate: Date;
+
+  @Prop({ type: Boolean, default: false })
+  hiddenHistory: boolean;
 }
 
 export const PackageSchema = SchemaFactory.createForClass(Package);
