@@ -184,45 +184,47 @@ export class AdminService {
 
   async getDeliveryUsers() {
     const users = await this.userModel.find();
-    const usersDelivery = await Promise.all(
-      users
-        .map(async (e) => {
-          if (!e.isAdmin) {
-            const oneHistory = await this.historyModel.find({ userId: e.id });
-            const totalPackages =
-              e.packagesPending.length + (e.packageInCourse ? 1 : 0) + oneHistory.length;
-            let percentage = oneHistory.length / totalPackages;
-            const percentageFixed = Number(percentage.toFixed(2));
-            percentage = percentageFixed * 10;
-            if (isNaN(percentage)) {
-              percentage = 0;
-            }
-            let status: string;
-            if (e.isDisabled) {
-              status = 'DESHABILITADO';
-            } else {
-              if (percentage === 100) {
-                status = 'COMPLETADO';
-              } else if (percentage === 0) {
-                status = 'INACTIVO';
-              } else {
-                status = 'EN CURSO';
-              }
-            }
-
-            return {
-              id: e._id,
-              name: e.name,
-              status,
-              percentage
-            };
-          } else {
-            return null;
+    let usersDelivery = await Promise.all(
+      users.map(async (e) => {
+        if (!e.isAdmin) {
+          const oneHistory = await this.historyModel.find({ userId: e.id });
+          const totalPackages =
+            e.packagesPending.length + (e.packageInCourse ? 1 : 0) + oneHistory.length;
+          let percentage = oneHistory.length / totalPackages;
+          const percentageFixed = Number(percentage.toFixed(2));
+          percentage = percentageFixed * 10;
+          if (isNaN(percentage)) {
+            percentage = 0;
           }
-        })
-        .filter((user) => user !== null)
-    );
+          let status: string;
+          if (e.isDisabled) {
+            status = 'DESHABILITADO';
+          } else {
+            if (percentage === 100) {
+              status = 'COMPLETADO';
+            } else if (percentage === 0) {
+              status = 'INACTIVO';
+            } else {
+              status = 'EN CURSO';
+            }
+          }
 
+          return {
+            id: e._id,
+            name: e.name,
+            status,
+            percentage
+          };
+        } else {
+          return null;
+        }
+      })
+    );
+    usersDelivery = usersDelivery.filter((user) => {
+      if (user !== null) {
+        return user;
+      }
+    });
     if (!users) throw new Error('Users not found');
     return usersDelivery;
   }
