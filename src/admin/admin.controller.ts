@@ -119,7 +119,6 @@ export class AdminController {
   @Public()
   @Put('toggleHiddenHistoryAdmin/:id')
   toggleHiddenHistoryAdmin(@Param('id') id: string) {
-    console.log('---------->ID PACKAGE', id);
     try {
       return this.adminService.toggleHiddenHistoryAdmin(id);
     } catch (error) {
