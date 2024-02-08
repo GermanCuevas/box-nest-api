@@ -118,7 +118,14 @@ export class UsersService {
 
     const deletedPackage = await this.packageModel.findByIdAndDelete(packageId);
     if (!deletedPackage) throw new Error('Package not deleted');
+    user.save();
     return;
+  }
+
+  async userIdHistory(userId: string) {
+    const userHistory = await this.historyModel.find({ userId });
+    if (!userHistory) throw new Error('History not found');
+    return userHistory;
   }
 
   async packagePendingAndInCourse(userId: string) {
