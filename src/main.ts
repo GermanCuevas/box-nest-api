@@ -15,7 +15,7 @@ async function bootstrap() {
   // somewhere in your initialization file
   app.use(cookieParser());
   app.enableCors({
-    origin: ['http://localhost:3000', 'https://box-client-iota.vercel.app'],
+    origin: ['http://localhost:3000'],
     methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'],
     credentials: true
   });
